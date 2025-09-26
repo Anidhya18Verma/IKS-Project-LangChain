@@ -1,0 +1,11 @@
+streamlit
+PyPDF2
+fpdf
+pytesseract
+Pillow
+speechrecognition
+pyttsx3
+transformers
+langchain
+sentence-transformers
+faiss-cpu
