@@ -6,8 +6,7 @@ Pillow
 speechrecognition
 pyttsx3
 transformers
-langchain
+langchain==0.1.4
 sentence-transformers
 faiss-cpu
 torch
-
