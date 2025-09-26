@@ -9,3 +9,5 @@ transformers
 langchain
 sentence-transformers
 faiss-cpu
+torch
+
