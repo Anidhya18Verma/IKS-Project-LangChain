@@ -7,7 +7,7 @@ from fpdf import FPDF
 
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.schema import Document
 
@@ -21,6 +21,9 @@ import json
 
 HISTORY_FILE = "chat_history.json"
 
+# ----------------------
+# Persistent conversation history
+# ----------------------
 def load_history():
     if os.path.exists(HISTORY_FILE):
         with open(HISTORY_FILE, "r", encoding="utf-8") as f:
@@ -31,6 +34,8 @@ def save_history(history):
     with open(HISTORY_FILE, "w", encoding="utf-8") as f:
         json.dump(history, f, indent=2, ensure_ascii=False)
 
+if "history" not in st.session_state:
+    st.session_state.history = load_history()
 
 # ----------------------
 # Helpers
@@ -73,10 +78,6 @@ def highlight_html(text: str, query: str) -> str:
         text = pattern.sub(lambda m: f"<mark>{m.group(0)}</mark>", text)
     return text
 
-# Persistent conversation history
-if "history" not in st.session_state:
-    st.session_state.history = load_history()
-
 # ----------------------
 # Streamlit UI
 # ----------------------
@@ -108,7 +109,7 @@ st.success(f"Processed {len(uploaded_files)} file(s), created {len(docs)} chunks
 # ----------------------
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 with st.spinner("Creating embeddings..."):
-    embedder = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+    embedder = HuggingFaceInstructEmbeddings(model_name=EMBED_MODEL)
     vectorstore = FAISS.from_documents(docs, embedder)
 
 retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
@@ -182,6 +183,9 @@ if st.checkbox("🔊 Speak Answer"):
 st.session_state.history.append({"Q": query, "A": answer})
 save_history(st.session_state.history)
 
+# ----------------------
+# Export conversation
+# ----------------------
 st.subheader("💾 Export Conversation")
 export_type = st.radio("Export as:", ["Text", "PDF"])
 if st.button("Download Conversation"):
