@@ -7,7 +7,7 @@ from fpdf import FPDF
 
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.schema import Document
 
@@ -109,7 +109,7 @@ st.success(f"Processed {len(uploaded_files)} file(s), created {len(docs)} chunks
 # ----------------------
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 with st.spinner("Creating embeddings..."):
-    embedder = HuggingFaceInstructEmbeddings(model_name=EMBED_MODEL)
+    embedder = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
     vectorstore = FAISS.from_documents(docs, embedder)
 
 retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
