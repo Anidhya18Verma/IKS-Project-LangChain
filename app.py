@@ -7,7 +7,7 @@ from fpdf import FPDF
 
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.schema import Document
 
@@ -201,3 +201,4 @@ if st.button("Download Conversation"):
         buf = BytesIO()
         pdf_bytes = pdf.output(dest='S').encode('latin-1')
         st.download_button("Download PDF", data=pdf_bytes, file_name="conversation.pdf", mime="application/pdf")
+
